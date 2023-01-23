@@ -1,6 +1,15 @@
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
 import "./Tabela.css";
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Select,
+  Table,
+  Typography,
+} from "antd";
 import { useState } from "react";
 const originData = {
   restaurant_id: "54321",
@@ -43,6 +52,17 @@ const originData = {
   ],
 };
 
+let attributesOptions = [];
+originData.menu.map((item) => {
+  return (attributesOptions = attributesOptions.concat(
+    item.attributes.map((word) => {
+      return { value: word, label: word };
+    })
+  ));
+});
+console.log(attributesOptions);
+
+console.log(attributesOptions);
 const EditableCell = ({
   editing,
   dataIndex,
@@ -97,7 +117,7 @@ const App = () => {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      console.log(data)
+      console.log(data);
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -119,22 +139,47 @@ const App = () => {
   };
   const columns = [
     {
-      title: "name",
+      title: "Nome",
+      key: uuidv4(),
       dataIndex: "name",
       width: "15%",
       editable: true,
     },
     {
-      title: "description",
+      title: "Descriçao",
+      key: uuidv4(),
       dataIndex: "description",
       width: "15%",
       editable: true,
     },
     {
-      title: "price",
+      title: "Preço",
+      key: uuidv4(),
       dataIndex: "price",
-      width: "40%",
+      width: "10%",
       editable: true,
+    },
+    {
+      title: "Atributos",
+      key: uuidv4(),
+      dataIndex: "attributes",
+      render: (attributes) => (
+        <>
+          {attributes.map((attribute) => (
+            <div key={attribute}>
+              {" "}
+              <Select
+                mode="tags"
+                style={{
+                  width: "100%",
+                }}
+                placeholder="Tags Mode"
+                options={attributesOptions}
+              />
+            </div>
+          ))}
+        </>
+      ),
     },
     {
       title: "operation",
@@ -152,7 +197,7 @@ const App = () => {
               Save
             </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <a href="'">Cancel</a>
             </Popconfirm>
           </span>
         ) : (
@@ -192,6 +237,7 @@ const App = () => {
         bordered
         dataSource={data}
         columns={mergedColumns}
+        rowKey={(record) => record.id}
         rowClassName="editable-row"
         pagination={{
           onChange: cancel,
