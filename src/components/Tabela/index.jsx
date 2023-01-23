@@ -96,7 +96,7 @@ function Restaurante() {
       <Table columns={coluna} dataSource={menu} rowKey="id" />
       <Modal
         title="Editar Item"
-        visivel={visivel}
+        visible={visivel}
         onOk={salvaTabela}
         onCancel={() => setVisivel(false)}
       >
