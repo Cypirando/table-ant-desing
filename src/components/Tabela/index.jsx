@@ -98,9 +98,14 @@ const EditableCell = ({
   );
 };
 const App = () => {
+  const [selectedAttribute, setSelectedAttribute] = useState("");
   const [form] = Form.useForm();
   const [data, setData] = useState(originData.menu);
   const [editingKey, setEditingKey] = useState("");
+  const handleSelectChange = (value) => {
+    setSelectedAttribute(value);
+  };
+  console.log(selectedAttribute);
   const isEditing = (record) => record.key === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
@@ -224,6 +229,7 @@ const App = () => {
   return (
     <Form form={form} component={false}>
       <Table
+        onChange={handleSelectChange}
         components={{
           body: {
             cell: EditableCell,
