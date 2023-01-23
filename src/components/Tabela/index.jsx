@@ -1,8 +1,8 @@
+import React from "react";
 import "./Tabela.css";
-import React, { useState } from "react";
-import { Table, Input, Button, Tag, Checkbox } from "antd";
-
-const data = {
+import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
+import { useState } from "react";
+const originData = {
   restaurant_id: "54321",
   menu: [
     {
@@ -10,170 +10,194 @@ const data = {
       name: "Steak Frites",
       description: "Bife grelhado acompanhado de batatas fritas",
       price: "22.99",
-      attributes: [
-        { name: "carne", checked: false },
-        { name: "batatas fritas", checked: false },
-        { name: "grelhado", checked: false },
-      ],
+      attributes: ["carne", "batatas fritas", "grelhado"],
     },
     {
       id: "2",
       name: "Poulet à la crème",
       description: "Frango em molho de creme e ervas",
       price: "18.99",
-      attributes: [
-        { name: "frango", checked: false },
-        { name: "creme", checked: false },
-        { name: "ervas", checked: false },
-      ],
+      attributes: ["frango", "creme", "ervas"],
     },
     {
       id: "3",
       name: "Sushi Maki",
       description: "Conjunto de makis de peixe e vegetais",
       price: "15.99",
-      attributes: [
-        { name: "vegetais", checked: false },
-        { name: "sushi", checked: false },
-        { name: "peixe", checked: false },
-      ],
+      attributes: ["peixe", "vegetais", "sushi"],
     },
     {
       id: "4",
       name: "Paella Valenciana",
       description: "Paella de frutos do mar e arroz",
       price: "21.99",
-      attributes: [
-        { name: "carne", checked: false },
-        { name: "frutos do mar", checked: false },
-      ],
+      attributes: ["frutos do mar", "arroz"],
     },
     {
       id: "5",
       name: "Gnocchi al Pesto",
       description: "Gnocchi em molho de pesto de manjericão",
       price: "16.99",
-      attributes: [
-        { name: "gnocchi", checked: false },
-        { name: "pesto", checked: false },
-        { name: "manjericão", checked: false },
-      ],
+      attributes: ["gnocchi", "pesto", "manjericão"],
     },
   ],
 };
 
-function Restaurante() {
-  const [menu, setMenu] = useState(data.menu);
-
-  const colunas = [
-    {
-      title: "Nome",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <Input
-          value={record.name}
-          onChange={(e) => salvaInformacao(e, record, "name")}
-        />
-      ),
-    },
-    {
-      title: "Descrição",
-      dataIndex: "description",
-      key: "description",
-      render: (text, record) => (
-        <Input
-          value={record.description}
-          onChange={(e) => salvaInformacao(e, record, "description")}
-        />
-      ),
-    },
-    {
-      title: "Preço",
-      dataIndex: "price",
-      key: "price",
-      render: (text, record) => (
-        <Tag color={etiquetaPreco(record.price)}>
-          <Input
-            className="preco"
-            value={record.price}
-            onChange={(e) => salvaInformacao(e, record, "price")}
-          />
-        </Tag>
-      ),
-    },
-    {
-      title: "Atributos",
-      key: "attributes",
-      render: (text, record) => (
-        <div>
-          {record.attributes.map((attribute, index) => (
-            <Checkbox
-              key={index}
-              checked={attribute.checked}
-              onChange={(e) => escolheAtributo(e, record, index)}
-            >
-              {attribute.name}
-            </Checkbox>
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: "Ação",
-      key: "action",
-      render: (text, record) => (
-        <Button type="link" onClick={() => salvarCard(record)}>
-          Salvar
-        </Button>
-      ),
-    },
-  ];
-
-  const etiquetaPreco = (price) => {
-    if (price > 30) {
-      return "red";
-    } else if (price > 20) {
-      return "yellow";
-    } else if (price > 10) {
-      return "green";
-    } else {
-      return "default";
+const EditableCell = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+  return (
+    <td {...restProps}>
+      {editing ? (
+        <Form.Item
+          name={dataIndex}
+          style={{
+            margin: 0,
+          }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        children
+      )}
+    </td>
+  );
+};
+const App = () => {
+  const [form] = Form.useForm();
+  const [data, setData] = useState(originData.menu);
+  const [editingKey, setEditingKey] = useState("");
+  const isEditing = (record) => record.key === editingKey;
+  const edit = (record) => {
+    form.setFieldsValue({
+      name: "",
+      description: "",
+      price: "",
+      ...record,
+    });
+    setEditingKey(record.key);
+  };
+  const cancel = () => {
+    setEditingKey("");
+  };
+  const save = async (key) => {
+    try {
+      const row = await form.validateFields();
+      console.log(data)
+      const newData = [...data];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        setData(newData);
+        setEditingKey("");
+      } else {
+        newData.push(row);
+        setData(newData);
+        setEditingKey("");
+      }
+    } catch (errInfo) {
+      console.log("Validate Failed:", errInfo);
     }
   };
-  const escolheAtributo = (e, record, index) => {
-    setMenu(
-      menu.map((item) => {
-        if (item.id === record.id) {
-          let newAttributes = [...item.attributes];
-          newAttributes[index].checked = e.target.checked;
-          return { ...item, attributes: newAttributes };
-        }
-        return item;
-      })
-    );
-  };
-  const salvaInformacao = (e, record, field) => {
-    e.persist(); // permite usar o evento fora do ciclo de vida atual
-    setMenu(
-      menu.map((item) => {
-        if (item.id === record.id) {
-          return { ...item, [field]: e.target.value };
-        }
-        return item;
-      })
-    );
-  };
-
-  const salvarCard = (record) => {
-    // código para salvar as alterações, por exemplo, enviando uma requisição a uma API
-  };
-
+  const columns = [
+    {
+      title: "name",
+      dataIndex: "name",
+      width: "15%",
+      editable: true,
+    },
+    {
+      title: "description",
+      dataIndex: "description",
+      width: "15%",
+      editable: true,
+    },
+    {
+      title: "price",
+      dataIndex: "price",
+      width: "40%",
+      editable: true,
+    },
+    {
+      title: "operation",
+      dataIndex: "operation",
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Typography.Link
+              onClick={() => save(record.key)}
+              style={{
+                marginRight: 8,
+              }}
+            >
+              Save
+            </Typography.Link>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <Typography.Link
+            disabled={editingKey !== ""}
+            onClick={() => edit(record)}
+          >
+            Edit
+          </Typography.Link>
+        );
+      },
+    },
+  ];
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: col.dataIndex === "age" ? "number" : "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
   return (
-    <div>
-      <Table columns={colunas} dataSource={menu} rowKey="id" />
-    </div>
+    <Form form={form} component={false}>
+      <Table
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        bordered
+        dataSource={data}
+        columns={mergedColumns}
+        rowClassName="editable-row"
+        pagination={{
+          onChange: cancel,
+        }}
+      />
+    </Form>
   );
-}
-
-export default Restaurante;
+};
+export default App;

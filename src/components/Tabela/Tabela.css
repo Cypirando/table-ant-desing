@@ -1,8 +1,14 @@
-.tabela{
-    display: flex;
-    justify-content: center;
+.tabela {
+  display: flex;
+  justify-content: center;
 }
-.preco{
-    border: none;
-    background: transparent;
+.preco {
+  border: none;
+  background: transparent;
+}
+
+.editable-row .ant-form-item-explain {
+  position: absolute;
+  top: 100%;
+  font-size: 12px;
 }
