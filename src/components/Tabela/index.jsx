@@ -93,7 +93,7 @@ function Restaurante() {
 
   return (
     <div>
-      <Table coluna={coluna} dataSource={menu} rowKey="id" />
+      <Table columns={coluna} dataSource={menu} rowKey="id" />
       <Modal
         title="Editar Item"
         visivel={visivel}
