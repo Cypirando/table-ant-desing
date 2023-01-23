@@ -165,19 +165,14 @@ const App = () => {
       dataIndex: "attributes",
       render: (attributes) => (
         <>
-          {attributes.map((attribute) => (
-            <div key={attribute}>
-              {" "}
-              <Select
-                mode="tags"
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Tags Mode"
-                options={attributesOptions}
-              />
-            </div>
-          ))}
+          <Select
+            mode="tags"
+            style={{
+              width: "100%",
+            }}
+            placeholder="Atributos"
+            options={attributesOptions}
+          />
         </>
       ),
     },
