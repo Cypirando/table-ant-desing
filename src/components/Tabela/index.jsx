@@ -168,12 +168,13 @@ const App = () => {
       title: "Atributos",
       key: uuidv4(),
       dataIndex: "attributes",
+      editable: false,
       render: (attributes) => (
         <>
           <Select
             mode="tags"
             style={{
-              width: "100%",
+              width: "80%",
             }}
             placeholder="Atributos"
             options={attributesOptions}
@@ -182,7 +183,8 @@ const App = () => {
       ),
     },
     {
-      title: "operation",
+      title: "Operações",
+      key: uuidv4(),
       dataIndex: "operation",
       render: (_, record) => {
         const editable = isEditing(record);
@@ -194,10 +196,10 @@ const App = () => {
                 marginRight: 8,
               }}
             >
-              Save
+              Salvar
             </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a href="'">Cancel</a>
+            <Popconfirm title="Tem certeza" onConfirm={cancel}>
+              <a href="'">Cancelar</a>
             </Popconfirm>
           </span>
         ) : (
@@ -205,7 +207,7 @@ const App = () => {
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
-            Edit
+            Editar
           </Typography.Link>
         );
       },
@@ -219,7 +221,6 @@ const App = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
