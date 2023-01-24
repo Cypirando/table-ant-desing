@@ -152,7 +152,7 @@ const Exemplo = () => {
             style={{
               width: "100%",
             }}
-            placeholder="Tags Mode"
+            placeholder="Atributos"
             onChange={(value) => handleTagChange(value, record.key)}
             options={text.map((atributo) => ({
               label: atributo,
