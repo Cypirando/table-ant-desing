@@ -1,4 +1,5 @@
-// import React from "react";
+import './Tabela.css'
+import React from "react";
 import {
   Form,
   InputNumber,
@@ -86,7 +87,7 @@ const EditableCell = ({
     </td>
   );
 };
-const Exemplo = () => {
+const Tabela = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState(newData);
   const [editingKey, setEditingKey] = useState("");
@@ -129,20 +130,20 @@ const Exemplo = () => {
     {
       title: "Nome",
       dataIndex: "name",
-      width: "25%",
+      width: "15%",
       editable: true,
     },
     {
       title: "Descrição",
       dataIndex: "description",
-      width: "50%",
+      width: "40%",
 
       editable: true,
     },
     {
       title: "Ingredientes",
       dataIndex: "attributes",
-      width: "40%",
+      width: "30%",
       editable: true,
       render: (text, record) => {
         console.log(text);
@@ -169,6 +170,7 @@ const Exemplo = () => {
     },
     {
       title: "Operaçâo",
+      width: "18%",
       dataIndex: "operation",
       render: (_, record) => {
         const editable = isEditing(record);
@@ -187,7 +189,7 @@ const Exemplo = () => {
             </Popconfirm>
           </span>
         ) : (
-          <Typography.Link
+          <Typography.Link 
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
@@ -239,4 +241,4 @@ const Exemplo = () => {
     </Form>
   );
 };
-export default Exemplo;
+export default Tabela;
