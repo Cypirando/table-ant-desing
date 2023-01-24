@@ -51,7 +51,6 @@ const originData = {
   ],
 };
 const newData = originData.menu;
-console.log(newData);
 
 const EditableCell = ({
   editing,
@@ -95,8 +94,9 @@ const Tabela = () => {
   const edit = (record) => {
     form.setFieldsValue({
       name: "",
-      age: "",
-      address: "",
+      description: "",
+      price: "",
+      attributes:"",
       ...record,
     });
     setEditingKey(record.key);
@@ -144,9 +144,9 @@ const Tabela = () => {
       title: "Ingredientes",
       dataIndex: "attributes",
       width: "30%",
-      editable: true,
+      editable: false,
       render: (text, record) => {
-        console.log(text);
+        console.log( "Atributo",text);
         return (
           <Select
             mode="tags"
@@ -190,7 +190,7 @@ const Tabela = () => {
           </span>
         ) : (
           <Typography.Link 
-            disabled={editingKey !== ""}
+            disabled={editingKey !== "" }
             onClick={() => edit(record)}
           >
             Editar
@@ -200,12 +200,10 @@ const Tabela = () => {
     },
   ];
   const handleTagChange = (value, key) => {
-    // update the data with the new tags here
-    setData((prevData) =>
-      prevData.map((item) =>
+    let newData = data.map((item) =>
         item.key === key ? { ...item, tags: value } : item
-      )
-    );
+      );
+    setData(newData);
   };
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
@@ -225,6 +223,7 @@ const Tabela = () => {
   return (
     <Form form={form} component={false}>
       <Table
+      className='quadro'
         components={{
           body: {
             cell: EditableCell,

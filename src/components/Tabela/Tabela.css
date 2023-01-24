@@ -1,17 +1,11 @@
-.tabela {
-  display: flex;
-  justify-content: center;
+.quadro {
+  margin: 0 10%;
 }
-.preco {
-  border: none;
-  background: transparent;
-}
-
 .editable-row .ant-form-item-explain {
   position: absolute;
   top: 100%;
   font-size: 12px;
 }
-.atributos{
+.atributos {
   border: none;
 }
